@@ -9,6 +9,18 @@ std::string BaseSocket::ipToString(sockaddr_in addr)
 
     return std::string(ip);
 }
+
+/*
+build socket 
+int socket(int domain, int type, int protocol)
+domain : 
+ * （1）AF_INET         IPv4
+ * （2）AF_INET6        IPv6
+ * （3）AF_UNIX         Unix ( between process )
+type : 
+ * （1）SOCK_STREAM     TCP
+ * （2）SOCK_DGRAM      UDP
+*/
 BaseSocket::BaseSocket(std::function<void(int, std::string)> onError, SocketType sockType, int socketFd) : sockfd(socketFd)
 {
     if (socketFd < 0) {
@@ -17,6 +29,7 @@ BaseSocket::BaseSocket(std::function<void(int, std::string)> onError, SocketType
         }
     }
 }
+
 void BaseSocket::Close()
 {
     if (isClosed)
@@ -25,10 +38,12 @@ void BaseSocket::Close()
     isClosed = true;
     close(this->sockfd);
 }
+
 std::string BaseSocket::remoteAddress()
 {
     return ipToString(this->address);
 }
+
 int BaseSocket::remotePort()
 {
     return ntohs(this->address.sin_port);

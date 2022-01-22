@@ -52,7 +52,7 @@ void start_task(string peer_ip,
                 uint16_t Recv_caster_id,
                 caster_comm_mode_t Recv_comm_mode)
 {
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(2)); // sleep for 2 seconds
     auto udp_sender = UDPSocket::Create(host_ip, host_port, UDPSocket::SocketBuildType::BindSocket);
     std::thread t2(recv_task, udp_sender, peer_ip, peer_port, Recv_caster_id, Recv_comm_mode);
     std::thread t1(send_task, udp_sender, Send_caster_id, Send_comm_mode);

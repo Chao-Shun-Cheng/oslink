@@ -47,10 +47,16 @@ private:
     map<string, callback_t> callback_map;
 
     command_options() = default;
+    
+    /*
+    delete these functions.
+    it's not able to copy and assign from other objects.
+    */
     command_options(const command_options &) = delete;
     command_options(command_options &&) = delete;
     command_options &operator=(const command_options &) = delete;
     command_options &operator=(command_options &&) = delete;
+    
     /*
       lambda function : [](){}
       std::visit allows you to apply a visitor to a list of variants.

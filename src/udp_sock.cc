@@ -8,10 +8,12 @@ UDPSocket::UDPSocket(std::function<void(int, std::string)> onError, int socketFD
 {
     build_type_ = SocketBuildType::None;
 }
+
 void UDPSocket::SendTo(std::string message, std::string host, uint16_t port, std::function<void(int, std::string)> onError)
 {
     this->SendTo(message.c_str(), message.length(), host, port, onError);
 }
+
 void UDPSocket::SendTo(const char *tx_buf, size_t tx_len, std::string host, uint16_t port, std::function<void(int, std::string)> onError)
 {
     sockaddr_in hostAddr;
@@ -44,10 +46,12 @@ void UDPSocket::SendTo(const char *tx_buf, size_t tx_len, std::string host, uint
         return;
     }
 }
+
 int UDPSocket::Send(std::string message) noexcept(false)
 {
     return this->Send(message.c_str(), message.length());
 }
+
 int UDPSocket::Send(const char *tx_buf, size_t tx_len) noexcept(false)
 {
     if (this->isClosed)
@@ -66,12 +70,13 @@ int UDPSocket::Send(const char *tx_buf, size_t tx_len) noexcept(false)
 
     return sent;
 }
+
 void UDPSocket::Connect(std::string peer, uint16_t port, std::function<void(int, std::string)> onError)
 {
     struct addrinfo hints, *res, *it;
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_family = AF_INET; // IPv4
+    hints.ai_socktype = SOCK_DGRAM; // UDP
 
     int status;
     if ((status = getaddrinfo(peer.c_str(), NULL, &hints, &res)) != 0) {
@@ -90,6 +95,7 @@ void UDPSocket::Connect(std::string peer, uint16_t port, std::function<void(int,
 
     this->Connect((uint32_t) this->address.sin_addr.s_addr, port, onError);
 }
+
 void UDPSocket::Connect(uint32_t ipv4, uint16_t port, std::function<void(int, std::string)> onError)
 {
     this->address.sin_family = AF_INET;
@@ -102,10 +108,16 @@ void UDPSocket::Connect(uint32_t ipv4, uint16_t port, std::function<void(int, st
         return;
     }
 }
+
 void UDPSocket::Bind(uint16_t port, std::function<void(int, std::string)> onError)
 {
     this->Bind("0.0.0.0", port, onError);
 }
+
+/*
+Start socket server 
+int bind(int sockfd, struct sockaddr* addr, int addrlen)
+*/
 void UDPSocket::Bind(std::string IPv4, std::uint16_t port, std::function<void(int, std::string)> onError)
 {
     if (inet_pton(AF_INET, IPv4.c_str(), &this->address.sin_addr) <= 0) {
@@ -121,6 +133,7 @@ void UDPSocket::Bind(std::string IPv4, std::uint16_t port, std::function<void(in
         return;
     }
 }
+
 ssize_t UDPSocket::RecvFrom(char *rx_buf, ssize_t rx_buf_max_size)
 {
     if (this->isClosed)
